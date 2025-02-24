@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs'); // Pour le hachage des mots de passe
 const User = require('./models/user.models');
 const { authenticateToken } = require('./token');
 const config = require('./config.json');
+const path = require('path');
 
 const Note = require("./models/Note-models");
 const app = express();
@@ -387,6 +388,13 @@ app.get("/search-notes/", authenticateToken, async (req, res) => {
     }
 });
 
+// const __dirname = path.resolve();
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../notes-app/dist')));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '../notes-app", "dist", index.html'));
+    });
+}
 
 // Lancement du serveur
 app.listen(8000, () => {
